@@ -36,10 +36,14 @@ export class Engine {
 
   public addGameObject(gameObject: GameObject): void {
     this._gameObjects.add(gameObject)
+    gameObject.onAdd?.()
+    gameObject.emit('add')
   }
 
   public removeGameObject(gameObject: GameObject): void {
     this._gameObjects.delete(gameObject)
+    gameObject.onRemove?.()
+    gameObject.emit('remove')
   }
 
   private _updateLoop(ts: number, lastTime: number): void {
@@ -56,16 +60,19 @@ export class Engine {
       // Execute pre-update methods
       for (const gameObject of this._gameObjects) {
         gameObject.preUpdate?.({ delta })
+        gameObject.emit('preupdate', { delta })
       }
 
       // Execute update methods
       for (const gameObject of this._gameObjects) {
         gameObject.update?.({ delta })
+        gameObject.emit('update', { delta })
       }
 
       // Execute post-update methods
       for (const gameObject of this._gameObjects) {
         gameObject.postUpdate?.({ delta })
+        gameObject.emit('postupdate', { delta })
       }
 
       // Execute rendering

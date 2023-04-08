@@ -1,9 +1,11 @@
 import {
+  Component,
   Engine,
   GameObject,
   ImageResource,
   ResourceLoader,
   SoundResource,
+  UpdateArgs,
 } from '@game-engine/core'
 import { CanvasRenderer } from '@game-engine/canvas'
 
@@ -39,7 +41,7 @@ class MyObj extends GameObject<{ x: number }> {
     })
   }
 
-  public update({ delta }: { delta: number }) {
+  public update({ delta }: UpdateArgs) {
     this.state.set((s) => {
       s.x += delta * 0.1
 
