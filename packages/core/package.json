@@ -1,0 +1,24 @@
+{
+  "name": "@game-engine/core",
+  "private": true,
+  "version": "0.0.0",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/game-engine.es.js",
+      "require": "./dist/game-engine.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "dev": "NODE_ENV=development vite build --watch",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vite": "^4.0.0",
+    "vite-plugin-dts": "^2.2.0"
+  }
+}

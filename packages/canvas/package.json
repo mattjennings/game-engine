@@ -1,0 +1,25 @@
+{
+  "name": "@game-engine/canvas",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    "./jsx": {
+      "import": "./jsx/index.js"
+    },
+    "./jsx/vite": {
+      "import": "./jsx/vite.js"
+    },
+    "./jsx/runtime": {
+      "import": "./jsx/runtime.js"
+    },
+    ".": {
+      "import": "./renderer.js"
+    }
+  },
+  "dependencies": {
+    "@game-engine/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "vite": "^4.0.0"
+  }
+}
