@@ -14,5 +14,11 @@
     "dev": "NODE_ENV=development vite build --watch",
     "build": "tsc && vite build",
     "preview": "vite preview"
+  },
+  "dependencies": {
+    "@types/events": "^3.0.0",
+    "@types/howler": "^2.2.7",
+    "events": "^3.3.0",
+    "howler": "^2.2.3"
   }
 }

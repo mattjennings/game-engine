@@ -1,5 +1,19 @@
-import { Engine, GameObject } from '@game-engine/core'
-import { CanvasRenderer, ImageResource } from '@game-engine/canvas'
+import {
+  Engine,
+  GameObject,
+  ImageResource,
+  ResourceLoader,
+  SoundResource,
+} from '@game-engine/core'
+import { CanvasRenderer } from '@game-engine/canvas'
+
+const loader = new ResourceLoader({
+  resources: {
+    cow: new ImageResource('/cow.png'),
+    character: new ImageResource('/character.png'),
+    music: new SoundResource('/music.mp3'),
+  },
+})
 
 const engine = new Engine({
   maxFPS: 60,
@@ -10,11 +24,10 @@ const engine = new Engine({
       height: 600,
     },
   }),
-}).start()
+})
 
-const image = new ImageResource('/cow.png')
-
-image.load()
+await loader.load()
+engine.start()
 
 class MyObj extends GameObject<{ x: number }> {
   constructor() {
@@ -37,7 +50,7 @@ class MyObj extends GameObject<{ x: number }> {
 
     return (
       <>
-        <sprite x={state.x} y={0} src={image} />
+        <sprite x={state.x} y={0} src={loader.get('cow')} />
         <text
           x={state.x}
           y={100}
