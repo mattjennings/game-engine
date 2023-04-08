@@ -1,4 +1,7 @@
-export * from './components/text.js'
+// @ts-nocheck
+
+import { Text } from '../components/text'
+import { Sprite } from '../components/sprite'
 
 export const h = (tag, props, ...children) => {
   // custom component
@@ -10,7 +13,14 @@ export const h = (tag, props, ...children) => {
     return children
   }
 
-  throw new Error(`Element tags not supported`)
+  switch (tag) {
+    case 'text':
+      return new Text({ ...props, children })
+    case 'sprite':
+      return new Sprite({ ...props, children })
+  }
+
+  throw new Error(`Element tag not supported: ${tag}`)
 }
 
 export const Fragment = 'Fragment'

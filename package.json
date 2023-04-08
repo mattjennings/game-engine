@@ -1,4 +1,7 @@
 {
   "name": "monorepo",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "typescript": "^5.0.0"
+  }
 }

@@ -2,18 +2,20 @@
   "name": "@game-engine/canvas",
   "version": "1.0.0",
   "type": "module",
+  "types": "./src/index.ts",
   "exports": {
-    "./jsx": {
+    "./src/jsx": {
       "import": "./jsx/index.js"
     },
     "./jsx/vite": {
-      "import": "./jsx/vite.js"
+      "import": "./src/jsx/vite.js"
     },
     "./jsx/runtime": {
-      "import": "./jsx/runtime.js"
+      "import": "./src/jsx/runtime.js"
     },
     ".": {
-      "import": "./renderer.js"
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
     }
   },
   "dependencies": {

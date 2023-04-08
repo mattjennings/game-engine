@@ -1,6 +1,5 @@
 import { Engine, GameObject } from '@game-engine/core'
-import { CanvasRenderer } from '@game-engine/canvas'
-import { Text } from '@game-engine/canvas/jsx'
+import { CanvasRenderer, ImageResource } from '@game-engine/canvas'
 
 const engine = new Engine({
   maxFPS: 60,
@@ -12,6 +11,10 @@ const engine = new Engine({
     },
   }),
 }).start()
+
+const image = new ImageResource('/cow.png')
+
+image.load()
 
 class MyObj extends GameObject<{ x: number }> {
   constructor() {
@@ -29,14 +32,19 @@ class MyObj extends GameObject<{ x: number }> {
     })
   }
 
-  render(ctx: CanvasRenderingContext2D) {
+  render() {
     const state = this.state.get()
 
-    ctx.font = '20px sans-serif'
-    ctx.fillText('hello from ctx', state.x, 50)
-
     return (
-      <Text x={state.x} y={100} text="hello from jsx" font="20px sans-serif" />
+      <>
+        <sprite x={state.x} y={0} src={image} />
+        <text
+          x={state.x}
+          y={100}
+          text="hello from jsx"
+          font="20px sans-serif"
+        />
+      </>
     )
   }
 }

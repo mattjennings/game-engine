@@ -1,5 +1,5 @@
-import { Renderer } from '@game-engine/core'
-import { createContext, useContext } from './jsx/index.js'
+import { GameObject, Renderer } from '@game-engine/core'
+import { createContext, useContext } from './jsx/index'
 
 const CanvasContext = createContext(null)
 
@@ -7,26 +7,23 @@ export function useCanvas() {
   return useContext(CanvasContext)
 }
 
-/**
- * @implements {Renderer}
- */
-export class CanvasRenderer {
-  /**
-   * @type {HTMLCanvasElement}
-   */
-  #canvas
+export interface CanvasRendererOptions {
+  dpr?: number
+  antialias?: boolean
+  resolution?: {
+    width: number
+    height: number
+  }
+}
 
-  /**
-   * @type {CanvasRenderingContext2D}
-   */
-  #context
+export class CanvasRenderer implements Renderer<any> {
+  #canvas: HTMLCanvasElement
 
-  /**
-   * @param {HTMLCanvasElement} canvas
-   */
-  constructor(canvas, options) {
+  #context: CanvasRenderingContext2D
+
+  constructor(canvas: HTMLCanvasElement, options: CanvasRendererOptions = {}) {
     this.#canvas = canvas
-    this.#context = canvas.getContext('2d')
+    this.#context = canvas.getContext('2d')!
 
     const dpr = options?.dpr || window.devicePixelRatio
     const antialias = options?.antialias ?? true
@@ -44,7 +41,7 @@ export class CanvasRenderer {
       this.#context.scale(dpr, dpr)
     }
 
-    if (options?.antialias) {
+    if (antialias) {
       this.#context.imageSmoothingEnabled = true
       this.#context.imageSmoothingQuality = 'high'
     }
@@ -59,11 +56,11 @@ export class CanvasRenderer {
     )
   }
 
-  /**
-   *
-   * @param {Set<any>} gameObjects
-   */
-  render(gameObjects) {
+  render(
+    gameObjects: Set<
+      GameObject<any> & { render: (ctx: CanvasRenderingContext2D) => void }
+    >
+  ) {
     if (!this.#context) {
       return
     }
