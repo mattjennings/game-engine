@@ -22,7 +22,7 @@ export class Engine {
   public start() {
     if (!this._running) {
       this._running = true
-      this._updateLoop(performance.now())
+      this._updateLoop(performance.now(), performance.now())
     }
 
     return this
@@ -42,15 +42,18 @@ export class Engine {
     this._gameObjects.delete(gameObject)
   }
 
-  private _updateLoop(lastTime: number): void {
+  private _updateLoop(ts: number, lastTime: number): void {
     if (!this._running) {
       return
     }
 
-    const currentTime = performance.now()
-    const delta = currentTime - lastTime
+    const delta = ts - lastTime
 
-    if (this._maxFPS === null || delta >= 1000 / this._maxFPS) {
+    if (this._maxFPS && delta < 1000 / this._maxFPS) {
+      requestAnimationFrame((nextTs) => this._updateLoop(nextTs, lastTime))
+      return
+    } else {
+      this._lastFrameTime = ts
       // Execute pre-update methods
       for (const gameObject of this._gameObjects) {
         gameObject.preUpdate?.({ delta })
@@ -72,10 +75,8 @@ export class Engine {
         this._renderer.render?.(this._gameObjects)
         this._renderer.renderEnd?.()
       }
-
-      lastTime = currentTime
     }
 
-    requestAnimationFrame(() => this._updateLoop(lastTime))
+    requestAnimationFrame((nextTs) => this._updateLoop(nextTs, ts))
   }
 }

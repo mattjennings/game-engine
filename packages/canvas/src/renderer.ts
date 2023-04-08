@@ -10,50 +10,110 @@ export function useCanvas() {
 export interface CanvasRendererOptions {
   dpr?: number
   antialias?: boolean
+  backgroundColor?: string
   resolution?: {
     width: number
     height: number
   }
+  scale?: Scale
 }
+
+type Scale = 'fit' | 'stretch'
 
 export class CanvasRenderer implements Renderer<any> {
   #canvas: HTMLCanvasElement
 
   #context: CanvasRenderingContext2D
 
+  dpr: number = window.devicePixelRatio
+  antialias: boolean = true
+  scale: Scale | undefined = undefined
+  resolution: {
+    width: number
+    height: number
+  } = {
+    width: 800,
+    height: 600,
+  }
+  backgroundColor: string = '#000'
+
   constructor(canvas: HTMLCanvasElement, options: CanvasRendererOptions = {}) {
     this.#canvas = canvas
     this.#context = canvas.getContext('2d')!
 
-    const dpr = options?.dpr || window.devicePixelRatio
-    const antialias = options?.antialias ?? true
-    const resolution = options?.resolution
+    if (options?.dpr) this.dpr = options.dpr
+    if (typeof options.antialias === 'boolean')
+      this.antialias = options.antialias
+    if (options?.resolution) this.resolution = options.resolution
+    if (options?.backgroundColor) this.backgroundColor = options.backgroundColor
+    if (options?.scale) this.scale = options.scale
 
-    if (resolution) {
-      canvas.width = resolution.width
-      canvas.height = resolution.height
-    }
+    // set resolution
+    const width = this.resolution.width
+    const height = this.resolution.height
 
-    if (dpr) {
-      const rect = canvas.getBoundingClientRect()
-      canvas.width = rect.width * dpr
-      canvas.height = rect.height * dpr
-      this.#context.scale(dpr, dpr)
-    }
+    // set dpr
+    canvas.width = width * this.dpr
+    canvas.height = height * this.dpr
+    canvas.style.width = `${width}px`
+    canvas.style.height = `${height}px`
 
-    if (antialias) {
+    this.#context.scale(this.dpr, this.dpr)
+
+    // set antialias
+    if (this.antialias) {
       this.#context.imageSmoothingEnabled = true
       this.#context.imageSmoothingQuality = 'high'
+      this.#canvas.style.imageRendering = 'auto'
+    } else {
+      this.#context.imageSmoothingEnabled = false
+      this.#canvas.style.imageRendering = 'pixelated'
+    }
+
+    window.addEventListener('resize', () => {
+      this.scaleCanvas()
+    })
+
+    this.scaleCanvas()
+  }
+
+  scaleCanvas() {
+    const container = this.#canvas.parentElement
+    if (!container) {
+      return
+    }
+
+    const containerWidth = container.offsetWidth
+    const containerHeight = container.offsetHeight
+    const aspectRatio = this.resolution.width / this.resolution.height
+
+    switch (this.scale) {
+      case 'fit': {
+        let newWidth = containerWidth
+        let newHeight = newWidth / aspectRatio
+
+        if (newHeight > containerHeight) {
+          newHeight = containerHeight
+          newWidth = newHeight * aspectRatio
+        }
+
+        this.#canvas.style.width = `${newWidth}px`
+        this.#canvas.style.height = `${newHeight}px`
+        break
+      }
+      case 'stretch': {
+        this.#canvas.style.width = `${containerWidth}px`
+        this.#canvas.style.height = `${containerHeight}px`
+        break
+      }
+      default:
+        break
     }
   }
 
   renderStart() {
-    this.#context.clearRect(
-      0,
-      0,
-      this.#context.canvas.width,
-      this.#context.canvas.height
-    )
+    this.#context.fillStyle = this.backgroundColor
+    this.#context.fillRect(0, 0, this.#canvas.width, this.#canvas.height)
   }
 
   render(
@@ -69,7 +129,7 @@ export class CanvasRenderer implements Renderer<any> {
       value: this.#context,
       children: () =>
         Array.from(gameObjects).map((gameObject) =>
-          gameObject.render(this.#context)
+          gameObject.render?.(this.#context)
         ),
     })
   }

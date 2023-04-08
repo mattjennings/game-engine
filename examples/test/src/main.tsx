@@ -16,13 +16,14 @@ const loader = new ResourceLoader({
 })
 
 const engine = new Engine({
-  maxFPS: 60,
   renderer: new CanvasRenderer(document.querySelector('canvas'), {
-    antialias: true,
+    antialias: false,
+    backgroundColor: 'black',
     resolution: {
-      width: 800,
-      height: 600,
+      width: 320,
+      height: 180,
     },
+    scale: 'fit',
   }),
 })
 
@@ -40,7 +41,11 @@ class MyObj extends GameObject<{ x: number }> {
 
   public update({ delta }: { delta: number }) {
     this.state.set((s) => {
-      s.x += delta / 100
+      s.x += delta * 0.1
+
+      // round to 2 decimal places
+      s.x = Math.round(s.x * 100) / 100
+
       return s
     })
   }
@@ -56,6 +61,7 @@ class MyObj extends GameObject<{ x: number }> {
           y={100}
           text="hello from jsx"
           font="20px sans-serif"
+          color="white"
         />
       </>
     )
