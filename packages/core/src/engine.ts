@@ -53,7 +53,6 @@ export class Engine {
       requestAnimationFrame((nextTs) => this._updateLoop(nextTs, lastTime))
       return
     } else {
-      this._lastFrameTime = ts
       // Execute pre-update methods
       for (const gameObject of this._gameObjects) {
         gameObject.preUpdate?.({ delta })
