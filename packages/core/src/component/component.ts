@@ -1,6 +1,7 @@
-import { GameObject } from './game-object'
+import { EventEmitter } from 'events'
+import { GameObject } from '../game-object'
 
-export class Component<T extends GameObject = GameObject> {
+export class Component<T extends GameObject = GameObject> extends EventEmitter {
   public gameObject!: T
 
   public preUpdate(_args: { delta: number }): void {}
@@ -9,6 +10,10 @@ export class Component<T extends GameObject = GameObject> {
 
   public onGameObjectAdd(): void {}
   public onGameObjectRemove(): void {}
+
+  constructor() {
+    super()
+  }
 
   public add(gameObject: GameObject): void {
     this.gameObject = gameObject as T

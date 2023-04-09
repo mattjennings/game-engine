@@ -11,37 +11,30 @@ export class GameObject<State = any> extends EventEmitter {
   public onRemove?(): void
 
   public state: Writable<State>
-  public components: Component[]
+  public components: Map<new () => Component, Component>
 
   constructor({
     state,
-    components,
   }: {
     state: State extends never ? State | undefined : State
-    components?: Component[]
   }) {
     super()
     this.state = writable<State>(state as State)
-    this.components = []
-
-    components?.forEach((c) => this.addComponent(c))
+    this.components = new Map()
   }
 
   public addComponent(component: Component): void {
-    this.components.push(component)
+    this.components.set(component.constructor as new () => Component, component)
     component.add(this)
   }
 
   public removeComponent(component: Component): void {
-    const index = this.components.indexOf(component)
-    if (index > -1) {
-      this.components.splice(index, 1)
-    }
+    this.components.delete(component.constructor as new () => Component)
     component.remove()
   }
 
-  public getComponent<T extends Component>(type: new () => T): T {
-    const component = this.components.find((c) => c instanceof type) as T
+  public getComponent<T extends Component>(type: new (...args: any) => T): T {
+    const component = this.components.get(type) as T
 
     if (!component) {
       throw new Error(`Component ${type.name} not found`)

@@ -9,6 +9,14 @@ export class ImageResource implements Resource {
     this.isLoaded = false
   }
 
+  get width() {
+    return this.image.width
+  }
+
+  get height() {
+    return this.image.height
+  }
+
   public async load() {
     await new Promise<HTMLImageElement>((resolve, reject) => {
       this.image.src = this.src

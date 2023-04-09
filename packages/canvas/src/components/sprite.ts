@@ -5,13 +5,33 @@ export interface SpriteProps {
   src: ImageResource
   x: number
   y: number
+  crop?: {
+    x: number
+    y: number
+    width: number
+    height: number
+  }
 }
 
 export function Sprite(props: SpriteProps) {
   const ctx = useCanvas()
 
   if (props.src.isLoaded) {
-    ctx.drawImage(props.src.image, props.x, props.y)
+    if (props.crop) {
+      ctx.drawImage(
+        props.src.image,
+        props.crop.x,
+        props.crop.y,
+        props.crop.width,
+        props.crop.height,
+        props.x,
+        props.y,
+        props.crop.width,
+        props.crop.height
+      )
+    } else {
+      ctx.drawImage(props.src.image, props.x, props.y)
+    }
   }
 }
 
