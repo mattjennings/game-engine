@@ -1,6 +1,9 @@
 {
   "name": "monorepo",
   "private": true,
+  "scripts": {
+    "build": "cd examples/test && pnpm build"
+  },
   "dependencies": {
     "typescript": "^5.0.0"
   }
