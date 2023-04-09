@@ -1,7 +1,7 @@
 // @ts-nocheck
 
-import { Text } from '../components/text'
-import { Sprite } from '../components/sprite'
+import { Text } from '../elements/text'
+import { Sprite } from '../elements/sprite'
 
 export const h = (tag, props, ...children) => {
   // custom component

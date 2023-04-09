@@ -1,3 +1,4 @@
 export * from './renderer.js'
-export * from './components/text.js'
-export * from './components/sprite.js'
+export * from './elements/text.js'
+export * from './elements/sprite.js'
+export * from './objects/render-object.js'

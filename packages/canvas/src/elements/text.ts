@@ -6,14 +6,19 @@ export interface TextProps {
   text: string
   x: number
   y: number
+  quality?: 'low' | 'medium' | 'high'
 }
 
 export function Text(props: TextProps) {
   const ctx = useCanvas()
 
-  ctx.font = props.font
-  ctx.fillStyle = props.color
+  ctx.save()
+  if (props.font) ctx.font = props.font
+  if (props.color) ctx.fillStyle = props.color
+  if (props.quality) ctx.imageSmoothingQuality = props.quality
+
   ctx.fillText(props.text, props.x, props.y)
+  ctx.restore()
 }
 
 declare global {

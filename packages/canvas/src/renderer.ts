@@ -3,7 +3,7 @@ import { createContext, useContext } from './jsx/index'
 
 const CanvasContext = createContext(null)
 
-export function useCanvas() {
+export function useCanvas(): CanvasRenderingContext2D {
   return useContext(CanvasContext)
 }
 
