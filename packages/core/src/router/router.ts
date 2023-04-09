@@ -160,6 +160,7 @@ export class Router<
 
     const SceneClass = sceneResource.Scene!
     const newScene = new SceneClass(this.engine, { name: route as string })
+
     newScene.activate({ data: options.data })
     this.currentScenes.push(newScene)
 

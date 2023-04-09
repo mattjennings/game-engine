@@ -22,9 +22,9 @@ export class Scene<Data = undefined> extends EventEmitter {
     this.engine = engine
     this.children = new Set<GameObject>()
 
-    this.update = this.update?.bind(this)
-    this.preUpdate = this.preUpdate?.bind(this)
-    this.postUpdate = this.postUpdate?.bind(this)
+    this.preUpdate = this.preUpdate.bind(this)
+    this.update = this.update.bind(this)
+    this.postUpdate = this.postUpdate.bind(this)
 
     this.engine.on('update', this.update)
     this.engine.on('preupdate', this.preUpdate)
@@ -79,11 +79,10 @@ export class Scene<Data = undefined> extends EventEmitter {
     for (const child of this.children) {
       this.destroyChild(child)
     }
-    this.emit('destroy')
 
     this.engine.off('update', this.update)
-    this.engine.off('preUpdate', this.preUpdate)
-    this.engine.off('postUpdate', this.postUpdate)
+    this.engine.off('preupdate', this.preUpdate)
+    this.engine.off('postupdate', this.postUpdate)
   }
 
   public preUpdate(_args: UpdateArgs): void {
