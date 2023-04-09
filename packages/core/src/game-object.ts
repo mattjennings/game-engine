@@ -1,17 +1,22 @@
 import { EventEmitter } from 'events'
 import { Writable, writable } from './store'
 import { Component } from './component'
+import { Engine } from './engine'
+import { Scene } from './scene'
 
 export class GameObject<State = any> extends EventEmitter {
-  public preUpdate?(args: UpdateArgs): void
-  public update?(args: UpdateArgs): void
-  public postUpdate?(args: UpdateArgs): void
-
-  public onAdd?(): void
-  public onRemove?(): void
+  engine?: Engine<any, any>
+  scene?: Scene<unknown>
 
   public state: Writable<State>
   public components: Map<new () => Component, Component>
+
+  public onAdd?(_scene: Scene<unknown>): void
+  public onDestroy?(): void
+
+  public onUpdate?(_args: UpdateArgs): void
+  public onPreUpdate?(_args: UpdateArgs): void
+  public onPostUpdate?(_args: UpdateArgs): void
 
   constructor({
     state,
@@ -41,6 +46,40 @@ export class GameObject<State = any> extends EventEmitter {
     }
 
     return component
+  }
+
+  public _attachScene(scene: Scene<unknown>): void {
+    this.scene = scene
+    this.engine = scene.engine
+    this.onAdd?.(scene)
+    this.emit('add')
+  }
+
+  public preUpdate(_args: UpdateArgs): void {
+    this.onPreUpdate?.(_args)
+    this.emit('preupdate', _args)
+  }
+
+  public update(_args: UpdateArgs): void {
+    this.onUpdate?.(_args)
+    this.emit('update', _args)
+  }
+
+  public postUpdate(_args: UpdateArgs): void {
+    this.onPostUpdate?.(_args)
+    this.emit('postupdate', _args)
+  }
+
+  public render(args: any): void {
+    this.emit('render', args)
+  }
+
+  public destroy() {
+    this.scene?.destroyChild(this)
+    this.onDestroy?.()
+    this.emit('destroy')
+    this.scene = undefined
+    this.engine = undefined
   }
 }
 

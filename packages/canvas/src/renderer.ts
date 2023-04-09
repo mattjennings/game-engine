@@ -1,4 +1,4 @@
-import { GameObject, Renderer } from '@game-engine/core'
+import { GameObject, Renderer, Scene } from '@game-engine/core'
 import { createContext, useContext } from './jsx/index'
 
 const CanvasContext = createContext(null)
@@ -18,9 +18,9 @@ export interface CanvasRendererOptions {
   scale?: Scale
 }
 
-type Scale = 'fit' | 'stretch'
+export type Scale = 'fit' | 'stretch'
 
-export class CanvasRenderer implements Renderer<any> {
+export class CanvasRenderer implements Renderer {
   #canvas: HTMLCanvasElement
 
   #context: CanvasRenderingContext2D
@@ -111,24 +111,17 @@ export class CanvasRenderer implements Renderer<any> {
     }
   }
 
-  renderStart() {
-    this.#context.fillStyle = this.backgroundColor
-    this.#context.fillRect(0, 0, this.#canvas.width, this.#canvas.height)
-  }
-
-  render(
-    gameObjects: Set<
-      GameObject<any> & { render: (ctx: CanvasRenderingContext2D) => void }
-    >
-  ) {
+  render({ scene }: { scene: Scene }) {
     if (!this.#context) {
       return
     }
+    this.#context.fillStyle = this.backgroundColor
+    this.#context.fillRect(0, 0, this.#canvas.width, this.#canvas.height)
 
     CanvasContext.Provider({
       value: this.#context,
       children: () =>
-        Array.from(gameObjects).map((gameObject) =>
+        Array.from(scene.children).map((gameObject) =>
           gameObject.render?.(this.#context)
         ),
     })

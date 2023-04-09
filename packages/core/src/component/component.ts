@@ -26,17 +26,17 @@ export class Component<T extends GameObject = GameObject> extends EventEmitter {
 
     this.gameObject.on('add', this.onGameObjectAdd)
     this.gameObject.on('remove', this.onGameObjectRemove)
-    this.gameObject.on('preUpdate', this.preUpdate)
+    this.gameObject.on('preupdate', this.preUpdate)
     this.gameObject.on('update', this.update)
-    this.gameObject.on('postUpdate', this.postUpdate)
+    this.gameObject.on('postupdate', this.postUpdate)
   }
 
   public remove(): void {
     this.gameObject.off('add', this.onGameObjectAdd)
     this.gameObject.off('remove', this.onGameObjectRemove)
 
-    this.gameObject.off('preUpdate', this.preUpdate)
+    this.gameObject.off('preupdate', this.preUpdate)
     this.gameObject.off('update', this.update)
-    this.gameObject.off('postUpdate', this.postUpdate)
+    this.gameObject.off('postupdate', this.postUpdate)
   }
 }

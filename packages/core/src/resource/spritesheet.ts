@@ -7,17 +7,18 @@ export class SpriteSheetResource<T extends string> extends ImageResource {
     [key: string]: number[]
   }
 
-  constructor({
-    src,
-    frameWidth,
-    frameHeight,
-    animations,
-  }: {
-    src: string
-    frameWidth: number
-    frameHeight: number
-    animations: Record<T, number[]>
-  }) {
+  constructor(
+    src: string,
+    {
+      frameWidth,
+      frameHeight,
+      animations,
+    }: {
+      frameWidth: number
+      frameHeight: number
+      animations: Record<T, number[]>
+    }
+  ) {
     super(src)
     this.frameWidth = frameWidth
     this.frameHeight = frameHeight

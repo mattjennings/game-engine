@@ -2,13 +2,8 @@ import { EventEmitter } from 'events'
 import { writable } from '../store'
 
 export abstract class Resource {
-  public abstract load(): Promise<void>
-  public abstract unload(): Promise<void>
-
   public abstract isLoaded: boolean
-
-  public abstract onLoaded(callback: (resource: Resource) => void): void
-  public abstract onUnloaded(callback: () => void): void
+  public abstract load(): Promise<void>
 }
 
 export class ResourceLoader<

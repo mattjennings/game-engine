@@ -1,7 +1,5 @@
-import { GameObject } from './game-object'
+import { Scene } from './scene'
 
-export abstract class Renderer<T extends GameObject<any>> {
-  abstract render?(gameObjects: Set<T>): void
-  abstract renderStart?(): void
-  abstract renderEnd?(): void
+export abstract class Renderer<T extends Scene = Scene> {
+  abstract render?(args: { scene: T; delta: number }): void
 }

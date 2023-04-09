@@ -4,4 +4,4 @@ export * from './renderer'
 export * from './resource'
 
 export * from './component'
-export * from './helpers'
+export * from './scene'

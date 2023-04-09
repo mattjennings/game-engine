@@ -61,28 +61,4 @@ export class SoundResource implements Resource {
       })
     })
   }
-
-  public unload() {
-    return new Promise<void>((resolve) => {
-      this.sound.unload()
-      this.isLoaded = false
-      resolve()
-    })
-  }
-
-  public get() {
-    return this.sound
-  }
-
-  public onLoaded(callback: (resource: SoundResource) => void) {
-    if (this.isLoaded) {
-      callback(this)
-    }
-  }
-
-  public onUnloaded(callback: () => void) {
-    if (!this.isLoaded) {
-      callback()
-    }
-  }
 }

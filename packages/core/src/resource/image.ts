@@ -29,24 +29,4 @@ export class ImageResource implements Resource {
       }
     })
   }
-
-  public unload() {
-    return new Promise<void>((resolve) => {
-      this.image.src = ''
-      this.isLoaded = false
-      resolve()
-    })
-  }
-
-  public onLoaded(callback: (resource: ImageResource) => void) {
-    if (this.isLoaded) {
-      callback(this)
-    }
-  }
-
-  public onUnloaded(callback: () => void) {
-    if (!this.isLoaded) {
-      callback()
-    }
-  }
 }
