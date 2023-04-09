@@ -4,4 +4,4 @@ export * from './renderer'
 export * from './resource'
 
 export * from './component'
-export * from './scene'
+export { Scene, type SceneActivateArgs } from './scene'

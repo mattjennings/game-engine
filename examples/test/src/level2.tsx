@@ -3,8 +3,7 @@ import { Player } from './player'
 import { RenderObject } from '@game-engine/canvas'
 
 export default class Level2 extends Scene {
-  public onCreate(): void {
-    console.log('Level2 created')
+  public onActivate(): void {
     this.addChild(new Player({ x: 200, y: 100 }))
 
     this.addChild(

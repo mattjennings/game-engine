@@ -78,6 +78,7 @@ export class GameObject<State = any> extends EventEmitter {
     this.scene?.destroyChild(this)
     this.onDestroy?.()
     this.emit('destroy')
+
     this.scene = undefined
     this.engine = undefined
   }

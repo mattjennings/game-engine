@@ -55,20 +55,20 @@ export class Engine<
   }
 
   private _updateLoop(ts: number, lastTime: number): any {
-    if (this.isRunning && this.router.currentScene) {
-      const delta = ts - lastTime
+    if (!this.isRunning) return
 
-      if (this.maxFPS === null || delta >= 1000 / this.maxFPS) {
-        this.emit('preupdate', { delta })
-        this.emit('update', { delta })
-        this.emit('postupdate', { delta })
+    const delta = ts - lastTime
 
-        if (this.router.currentScene) {
-          this.render(this.router.currentScene, { delta })
-        }
+    if (this.maxFPS === null || delta >= 1000 / this.maxFPS) {
+      this.emit('preupdate', { delta })
+      this.emit('update', { delta })
+      this.emit('postupdate', { delta })
 
-        return requestAnimationFrame((nextTs) => this._updateLoop(nextTs, ts))
+      for (const scene of this.router.currentScenes) {
+        this.render(scene, { delta })
       }
+
+      return requestAnimationFrame((nextTs) => this._updateLoop(nextTs, ts))
     }
 
     requestAnimationFrame((nextTs) => this._updateLoop(nextTs, lastTime))

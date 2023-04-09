@@ -11,8 +11,6 @@ export class Scene<Data = undefined> extends EventEmitter {
   isActive: boolean = false
   engine: Engine<any, any>
 
-  public onCreate(): void {}
-  public onDestroy(): void {}
   public onActivate(_args: SceneActivateArgs): void {}
   public onDeactivate(): void {}
 
@@ -23,8 +21,6 @@ export class Scene<Data = undefined> extends EventEmitter {
     this.name = opts?.name
     this.engine = engine
     this.children = new Set<GameObject>()
-
-    this.onCreate?.()
 
     this.update = this.update?.bind(this)
     this.preUpdate = this.preUpdate?.bind(this)
@@ -55,23 +51,23 @@ export class Scene<Data = undefined> extends EventEmitter {
     }
   }
 
-  public _activate({ data }: SceneActivateArgs<Data>) {
+  public activate({ data }: SceneActivateArgs<Data>) {
     this.onActivate?.({ data } as SceneActivateArgs)
     this.emit('activate', { data })
     this.isActive = true
   }
 
-  public _deactivate() {
+  public deactivate() {
     this.onDeactivate?.()
     this.emit('deactivate')
     this.isActive = false
   }
 
-  public _destroy() {
+  public destroy() {
+    this.deactivate()
     for (const child of this.children) {
       this.destroyChild(child)
     }
-    this.onDestroy?.()
     this.emit('destroy')
 
     this.engine.off('update', this.update)
