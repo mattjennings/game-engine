@@ -20,6 +20,20 @@ export interface CanvasRendererOptions {
 
 export type Scale = 'fit' | 'stretch'
 
+interface CanvasScene extends Scene<any> {
+  preRender?: (context: CanvasRenderingContext2D) => void
+  render?: (context: CanvasRenderingContext2D) => void
+  postRender?: (context: CanvasRenderingContext2D) => void
+
+  children: Set<CanvasGameObject | GameObject>
+}
+
+interface CanvasGameObject extends GameObject {
+  preRender?: (context: CanvasRenderingContext2D) => void
+  render?: (context: CanvasRenderingContext2D) => void
+  postRender?: (context: CanvasRenderingContext2D) => void
+}
+
 export class CanvasRenderer implements Renderer {
   #canvas: HTMLCanvasElement
 
@@ -111,7 +125,7 @@ export class CanvasRenderer implements Renderer {
     }
   }
 
-  render({ scene }: { scene: Scene }) {
+  render({ scene }: { scene: CanvasScene }) {
     if (!this.#context) {
       return
     }
@@ -120,10 +134,41 @@ export class CanvasRenderer implements Renderer {
 
     CanvasContext.Provider({
       value: this.#context,
-      children: () =>
-        Array.from(scene.children).map((gameObject) =>
+      children: () => {
+        const canvasGameObjects: CanvasGameObject[] = Array.from(
+          scene.children
+        ).filter(
+          (gameObject) =>
+            'render' in gameObject ||
+            'preRender' in gameObject ||
+            'postRender' in gameObject
+        )
+
+        // pre render
+        if (scene.preRender) {
+          scene.preRender(this.#context)
+        }
+
+        canvasGameObjects.forEach((gameObject) => {
+          gameObject.preRender?.(this.#context)
+        })
+
+        if (scene.render) {
+          scene.render(this.#context)
+        }
+
+        canvasGameObjects.forEach((gameObject) => {
           gameObject.render?.(this.#context)
-        ),
+        })
+
+        canvasGameObjects.forEach((gameObject) => {
+          gameObject.postRender?.(this.#context)
+        })
+
+        if (scene.postRender) {
+          scene.postRender(this.#context)
+        }
+      },
     })
   }
 }

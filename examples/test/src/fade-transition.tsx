@@ -1,7 +1,7 @@
 import { Transition } from '@game-engine/core'
 
 export class FadeTransition extends Transition {
-  render(ctx) {
+  postRender(ctx) {
     const { progress, isOutro } = this.state.get()
 
     ctx.save()

@@ -5,7 +5,7 @@ import { Engine } from './engine'
 import { Scene } from './scene'
 
 export class GameObject<State = any> extends EventEmitter {
-  engine?: Engine<any, any>
+  engine?: Engine
   scene?: Scene<unknown>
 
   public state: Writable<State>
@@ -72,10 +72,6 @@ export class GameObject<State = any> extends EventEmitter {
   public postUpdate(_args: UpdateArgs): void {
     this.onPostUpdate?.(_args)
     this.emit('postupdate', _args)
-  }
-
-  public render(args: any): void {
-    this.emit('render', args)
   }
 
   public destroy() {
