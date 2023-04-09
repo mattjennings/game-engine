@@ -1,7 +1,4 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "node"
-  }
+  "extends": "../../tsconfig.json",
+  "include": ["src"]
 }

@@ -1,4 +1,4 @@
-import { AnimationComponent, GameObject, UpdateArgs } from '@game-engine/core'
+import { AnimationComponent, GameObject } from '@game-engine/core'
 import { resources } from './game'
 
 export class Player extends GameObject<{ x: number; y: number }> {
@@ -23,6 +23,11 @@ export class Player extends GameObject<{ x: number; y: number }> {
 
   render() {
     const animation = this.getComponent(AnimationComponent)
+
+    if (!animation.current) {
+      return null
+    }
+
     const frame = this.spritesheet.getAnimationFrame(
       animation.current.name,
       animation.current.frame

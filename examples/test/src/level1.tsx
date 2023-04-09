@@ -1,15 +1,8 @@
-import {
-  Scene,
-  Engine,
-  UpdateArgs,
-  GameObject,
-  SceneActivateArgs,
-} from '@game-engine/core'
+import { Scene } from '@game-engine/core'
 import { Player } from './player'
-import { RenderObject } from '@game-engine/canvas'
 
-export default class Level1 extends Scene<{ something?: boolean }> {
-  public onActivate(args: SceneActivateArgs<{ something?: boolean }>): void {
+export default class Level1 extends Scene {
+  public onActivate(): void {
     this.addChild(new Player({ x: 100, y: 100 }))
   }
 

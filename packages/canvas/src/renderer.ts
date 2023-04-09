@@ -1,4 +1,5 @@
 import { GameObject, Renderer, Scene } from '@game-engine/core'
+// @ts-ignore
 import { createContext, useContext } from './jsx/index'
 
 const CanvasContext = createContext(null)

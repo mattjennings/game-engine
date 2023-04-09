@@ -1,6 +1,5 @@
 import { Scene, Engine, UpdateArgs, ImageResource } from '@game-engine/core'
 import { Player } from './player'
-import { RenderObject } from '@game-engine/canvas'
 import { resources } from './game'
 
 resources.add('cow', new ImageResource('/cow.png'))

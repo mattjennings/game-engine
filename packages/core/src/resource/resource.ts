@@ -48,10 +48,16 @@ export class ResourceLoader<
     }
   }
 
-  public get<K extends keyof T>(key: K): T[K] | undefined
-  public get(key: string): Resource | undefined
-  public get(key: Union<keyof T, string> | string): Resource | undefined {
-    return this.resources.get(key as keyof T)
+  public get<K extends keyof T>(key: K): T[K]
+  public get(key: string): Resource
+  public get(key: Union<keyof T, string> | string): Resource {
+    const resource = this.resources.get(key as keyof T)
+
+    if (!resource) {
+      throw new Error(`Resource ${key as string} not found`)
+    }
+
+    return resource
   }
 
   public async load() {

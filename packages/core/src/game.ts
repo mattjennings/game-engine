@@ -23,16 +23,16 @@ export class Game<
   engine: Engine
   router: Router<Scenes>
   renderer?: R
-  resources?: ResourceLoader<Resources>
+  resources: ResourceLoader<Resources>
 
   constructor(options: GameOptions<Scenes, Resources, R>) {
     const { autoStart = true } = options
     this.engine = new Engine(options)
     this.renderer = options.renderer
 
-    if (options.resources) {
-      this.resources = new ResourceLoader({ resources: options.resources })
-    }
+    this.resources = new ResourceLoader({
+      resources: options.resources ?? ({} as Resources),
+    })
 
     this.router = new Router(this.engine, options.scenes, this.resources)
 

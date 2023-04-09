@@ -9,7 +9,7 @@ export const { engine, router, resources } = new Game({
     level1: Level1,
     level2: () => import('./level2'),
   },
-  renderer: new CanvasRenderer(document.querySelector('canvas'), {
+  renderer: new CanvasRenderer(document.querySelector('canvas')!, {
     antialias: false,
     backgroundColor: 'black',
     resolution: {
