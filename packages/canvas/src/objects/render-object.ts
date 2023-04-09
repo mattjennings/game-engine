@@ -4,9 +4,7 @@ export class RenderObject extends GameObject {
   fn: () => JSX.IntrinsicElements
 
   constructor(fn: () => JSX.IntrinsicElements) {
-    super({
-      state: {},
-    })
+    super()
     this.fn = fn
   }
 

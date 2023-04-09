@@ -14,12 +14,12 @@ export class Transition extends GameObject<{
   easing: (t: number) => number
 
   constructor({ duration = 300, easing = (t) => t }: TransitionArgs = {}) {
-    super({
-      state: {
-        progress: 0,
-        isOutro: false,
-        started: false,
-      },
+    super()
+
+    this.state.set({
+      progress: 0,
+      isOutro: false,
+      started: false,
     })
 
     this.duration =

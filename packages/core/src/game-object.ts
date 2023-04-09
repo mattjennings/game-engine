@@ -19,13 +19,9 @@ export class GameObject<State = any> extends EventEmitter {
   public onPreUpdate?(_args: UpdateArgs): void
   public onPostUpdate?(_args: UpdateArgs): void
 
-  constructor({
-    state,
-  }: {
-    state: State extends never ? State | undefined : State
-  }) {
+  constructor() {
     super()
-    this.state = writable<State>(state as State)
+    this.state = writable<State>(undefined as any)
     this.components = new Map()
   }
 

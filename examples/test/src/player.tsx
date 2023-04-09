@@ -5,11 +5,11 @@ const spritesheet = resources.get('character')
 
 export class Player extends GameObject<{ x: number; y: number }> {
   constructor({ x, y }: { x: number; y: number }) {
-    super({
-      state: {
-        x,
-        y,
-      },
+    super()
+
+    this.state.set({
+      x,
+      y,
     })
 
     this.addComponent(

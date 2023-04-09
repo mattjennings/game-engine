@@ -80,18 +80,24 @@ export class Scene<Data = undefined> extends EventEmitter {
   }
 
   public preUpdate(_args: UpdateArgs): void {
+    if (!this.isActive) return
+
     for (const child of this.children) {
       child.preUpdate(_args)
     }
   }
 
   public update(_args: UpdateArgs): void {
+    if (!this.isActive) return
+
     for (const child of this.children) {
       child.update(_args)
     }
   }
 
   public postUpdate(_args: UpdateArgs): void {
+    if (!this.isActive) return
+
     for (const child of this.children) {
       child.postUpdate(_args)
     }
