@@ -2,6 +2,7 @@ import { EventEmitter } from 'events'
 import { Scene } from '../scene'
 import { Resource } from '../resource'
 import { Engine } from './engine'
+import { Transition } from './transition'
 
 type AsyncScene<Data = any> = () => Promise<
   { default: typeof Scene<Data> } | typeof Scene<Data>
@@ -19,6 +20,7 @@ export interface RouterArgs<Scenes extends Record<string, SceneRoute<any>>> {
 export interface NavigateOptions<Data = any> {
   data?: Data
   replace?: boolean
+  transition?: Transition
 }
 
 export class Router<
@@ -27,6 +29,7 @@ export class Router<
   currentScenes: Scene[] = []
   engine: Engine<any, any>
   scenes: Map<keyof Scenes, SceneResource> = new Map()
+  currentTransition: Transition | null = null
 
   constructor(args: RouterArgs<Scenes>) {
     super()
@@ -68,12 +71,18 @@ export class Router<
     if (!resource.isLoaded) await resource.load()
   }
 
-  // infer Data from Scenes[K]
   async navigate<K extends keyof Scenes>(
     sceneKey: K,
     options: NavigateOptions<SceneData<Scenes[K]>> = {}
   ) {
-    const { replace = true } = options
+    const { replace = true, transition } = options
+
+    // If there is an ongoing transition, stop it
+    if (this.currentTransition) {
+      throw new Error(
+        'Cannot navigate while a transition is in progress, use router.waitForTransition() first'
+      )
+    }
 
     const sceneResource = this.scenes.get(sceneKey)
     if (!sceneResource)
@@ -81,15 +90,54 @@ export class Router<
     if (!sceneResource.isLoaded) await this.loadScene(sceneKey)
 
     const SceneClass = sceneResource.Scene!
+
     if (replace) {
+      if (transition) {
+        this.currentTransition = transition
+        this.currentScene.addChild(transition)
+        await this.playTransition(transition, true)
+      }
+
       for (const scene of this.currentScenes) {
         scene.deactivate()
       }
+
+      if (transition) {
+        this.currentScene.removeChild(transition)
+      }
+
       this.currentScenes = []
     }
+
     const newScene = new SceneClass(this.engine, { name: sceneKey as string })
     newScene.activate({ data: options.data })
     this.currentScenes.push(newScene)
+
+    if (transition) {
+      newScene.addChild(transition)
+      await this.playTransition(transition, false)
+      newScene.destroyChild(transition)
+    }
+    this.currentTransition = null
+  }
+
+  async playTransition(transition: Transition, isOutro: boolean) {
+    this.currentTransition = transition
+    await transition.execute(isOutro)
+  }
+
+  async waitForTransition() {
+    if (this.currentTransition) {
+      await new Promise((resolve) => {
+        const check = () => {
+          if (!this.currentTransition) {
+            this.engine.off('update', check)
+            resolve(undefined)
+          }
+        }
+        this.engine.on('update', check)
+      })
+    }
   }
 }
 

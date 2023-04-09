@@ -12,6 +12,7 @@ export class GameObject<State = any> extends EventEmitter {
   public components: Map<new () => Component, Component>
 
   public onAdd?(_scene: Scene<unknown>): void
+  public onRemove?(): void
   public onDestroy?(): void
 
   public onUpdate?(_args: UpdateArgs): void
@@ -48,11 +49,18 @@ export class GameObject<State = any> extends EventEmitter {
     return component
   }
 
-  public _attachScene(scene: Scene<unknown>): void {
+  public attachScene(scene: Scene<unknown>): void {
     this.scene = scene
     this.engine = scene.engine
     this.onAdd?.(scene)
     this.emit('add')
+  }
+
+  public detachScene(): void {
+    this.onRemove?.()
+    this.emit('remove')
+    this.scene = undefined
+    this.engine = undefined
   }
 
   public preUpdate(_args: UpdateArgs): void {
@@ -75,12 +83,10 @@ export class GameObject<State = any> extends EventEmitter {
   }
 
   public destroy() {
-    this.scene?.destroyChild(this)
     this.onDestroy?.()
     this.emit('destroy')
-
-    this.scene = undefined
-    this.engine = undefined
+    this.scene?.removeChild(this)
+    this.detachScene()
   }
 }
 

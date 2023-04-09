@@ -34,11 +34,17 @@ export class Scene<Data = undefined> extends EventEmitter {
   public addChild(gameObject: GameObject): void {
     if (!this.children.has(gameObject)) {
       this.children.add(gameObject)
-      gameObject._attachScene(this)
+      gameObject.attachScene(this)
 
       this.emit('gameobject_added', gameObject)
-    } else {
-      console.warn('GameObject already added to scene')
+    }
+  }
+
+  public removeChild(gameObject: GameObject): void {
+    if (this.children.has(gameObject)) {
+      this.children.delete(gameObject)
+      gameObject.detachScene()
+      this.emit('gameobject_removed', gameObject)
     }
   }
 
@@ -46,8 +52,6 @@ export class Scene<Data = undefined> extends EventEmitter {
     if (this.children.has(gameObject)) {
       this.children.delete(gameObject)
       this.emit('gameobject_destroyed', gameObject)
-    } else {
-      console.warn('GameObject not found in scene')
     }
   }
 
