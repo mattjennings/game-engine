@@ -65,7 +65,7 @@ class MyObj extends GameObject<{ x: number }> {
 
   public update({ delta }: UpdateArgs) {
     this.state.set((s) => {
-      // s.x += delta * 0.1
+      s.x += delta * 0.1
 
       // round to 2 decimal places
       s.x = Math.round(s.x * 100) / 100
@@ -75,7 +75,7 @@ class MyObj extends GameObject<{ x: number }> {
   }
 
   render() {
-    const state = this.state.get()
+    const state = this.state()
     const animation = this.getComponent(AnimationComponent)
 
     const frame = loader
