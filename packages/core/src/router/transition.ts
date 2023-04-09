@@ -36,11 +36,22 @@ export class Transition extends GameObject<{
     this.on('outrocomplete', this.onOutroComplete)
   }
 
+  onAdd() {
+    if (this.engine) {
+      this.engine.on('preupdate', this.onEnginePreUpdate)
+    }
+  }
+
+  onDestroy() {
+    if (this.engine) {
+      this.engine.off('preupdate', this.onEnginePreUpdate)
+    }
+  }
   private getDuration() {
     return this.state().isOutro ? this.duration.outro : this.duration.intro
   }
 
-  onPreUpdate({ delta }: UpdateArgs) {
+  onEnginePreUpdate = ({ delta }: UpdateArgs) => {
     if (this.state().started) {
       if (this.state().progress >= 1) {
         this.state.set((prev) => ({

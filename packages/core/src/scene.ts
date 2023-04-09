@@ -9,14 +9,14 @@ export interface SceneActivateArgs<Data = undefined> {
 export class Scene<Data = undefined> extends EventEmitter {
   name?: string
   isActive: boolean = false
-  engine: Engine<any, any>
+  engine: Engine
 
   public onActivate(_args: SceneActivateArgs): void {}
   public onDeactivate(): void {}
 
   public children: Set<GameObject>
 
-  constructor(engine: Engine<any>, opts?: { name?: string }) {
+  constructor(engine: Engine, opts?: { name?: string }) {
     super()
     this.name = opts?.name
     this.engine = engine
@@ -40,6 +40,12 @@ export class Scene<Data = undefined> extends EventEmitter {
     }
   }
 
+  public addChildren(gameObjects: GameObject[]): void {
+    for (const gameObject of gameObjects) {
+      this.addChild(gameObject)
+    }
+  }
+
   public removeChild(gameObject: GameObject): void {
     if (this.children.has(gameObject)) {
       this.children.delete(gameObject)
@@ -51,6 +57,7 @@ export class Scene<Data = undefined> extends EventEmitter {
   public destroyChild(gameObject: GameObject): void {
     if (this.children.has(gameObject)) {
       this.children.delete(gameObject)
+      gameObject.destroy()
       this.emit('gameobject_destroyed', gameObject)
     }
   }

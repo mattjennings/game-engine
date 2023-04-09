@@ -81,8 +81,9 @@ export class GameObject<State = any> extends EventEmitter {
   public destroy() {
     this.onDestroy?.()
     this.emit('destroy')
-    this.scene?.removeChild(this)
-    this.detachScene()
+    if (this.scene) {
+      this.scene.removeChild(this)
+    }
   }
 }
 

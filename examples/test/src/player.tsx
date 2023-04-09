@@ -1,9 +1,9 @@
 import { AnimationComponent, GameObject, UpdateArgs } from '@game-engine/core'
-import { resources } from './resources'
-
-const spritesheet = resources.get('character')
+import { resources } from './game'
 
 export class Player extends GameObject<{ x: number; y: number }> {
+  private spritesheet = resources.get('character')
+
   constructor({ x, y }: { x: number; y: number }) {
     super()
 
@@ -13,7 +13,7 @@ export class Player extends GameObject<{ x: number; y: number }> {
     })
 
     this.addComponent(
-      AnimationComponent.fromSpriteSheet(spritesheet, {
+      AnimationComponent.fromSpriteSheet(this.spritesheet, {
         initial: 'walk_down',
         frameRate: 5,
         strategy: 'loop',
@@ -23,7 +23,7 @@ export class Player extends GameObject<{ x: number; y: number }> {
 
   render() {
     const animation = this.getComponent(AnimationComponent)
-    const frame = spritesheet.getAnimationFrame(
+    const frame = this.spritesheet.getAnimationFrame(
       animation.current.name,
       animation.current.frame
     )
@@ -32,7 +32,7 @@ export class Player extends GameObject<{ x: number; y: number }> {
       <sprite
         x={this.state().x}
         y={this.state().y}
-        src={spritesheet}
+        src={this.spritesheet}
         crop={frame}
       />
     )
